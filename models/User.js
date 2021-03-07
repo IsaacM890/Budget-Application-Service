@@ -11,7 +11,27 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  email:{
-      
-  }
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  avatar: {
+    type: String,
+  },
+  current_balance: {
+    type: String,
+  },
+  current_balance_currency: {
+    type: String,
+  },
+  credit_card: [
+    {
+      exp_year: { type: Number, required: true },
+      exp_month: { type: Number, required: true },
+      last4Digits: { type: Number, required: true },
+    },
+  ],
 });
+
+module.exports = User = mongoose.model('user', UserSchema);
