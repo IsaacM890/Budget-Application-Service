@@ -4,8 +4,8 @@
   "description": "Budget app services",
   "main": "server.js",
   "scripts": {
-    "start":"node server",
-    "server":"nodemon server",
+    "start": "node server",
+    "server": "nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/IsaacM890/Budget-Application-Services#readme",
   "dependencies": {
+    "config": "^3.3.4",
     "express": "^4.17.1",
     "mongoose": "^5.11.19"
   },
