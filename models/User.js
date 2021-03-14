@@ -3,6 +3,10 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+  userID: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
   first_name: {
     type: String,
     required: true,
@@ -22,14 +26,17 @@ const UserSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
+    required: true,
   },
   current_balance: {
     type: String,
+    required: true,
   },
   current_balance_currency: {
     type: String,
+    required: true,
   },
-  credit_card: [
+  credit_cards: [
     {
       exp_year: { type: Number, required: true },
       exp_month: { type: Number, required: true },
