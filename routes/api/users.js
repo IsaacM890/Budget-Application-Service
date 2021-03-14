@@ -1,73 +1,25 @@
 /** @format */
 
 const express = require('express');
-const router = express.Router();
-const { check, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
+const User_Cntr = require('../../controllers/User_cntr');
 const User = require('../../models/User');
+const router = express.Router();
 
-// @route    Post api/users
+// @route    POST api/users/register
 // @desc     Register User
 // @access   Public
 
-router.post(
-  '/',
-  [
-    check('first_name', 'First name is required').not().isEmpty(),
-    check('last_name', 'Last name is required').not().isEmpty(),
-    check('email', 'Please include a valid email').isEmail(),
-    check(
-      'password',
-      'Please enter a password with 6 or more characters'
-    ).isLength({ min: 6 }),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+router.post('/register', User_Cntr.validationChecks, User_Cntr.createUser);
 
-    const {
-      first_name,
-      last_name,
-      email,
-      password,
-      avatar,
-      current_balance,
-      current_balance_currency,
-      credit_card,
-    } = req.body;
+// @route    DELETE api/transactions
+// @desc     Delete User
+// @access   public
 
-    try {
-      let user = await User.findOne({ email });
-      if (user) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'User is already exists' }] });
-      }
+router.delete('/', User_Cntr.deleteUser);
 
-      user = new User({
-        first_name,
-        last_name,
-        email,
-        password,
-        avatar,
-        current_balance,
-        current_balance_currency,
-        credit_card,
-      });
+// @route    PUT api/transactions
+// @desc     Update User
+// @access   public
 
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-     
-      await user.save();
-     
-      res.send('User Registered');
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
-    }
-  }
-);
-
+router.put('/', User_Cntr.validationChecks, User_Cntr.deleteUser);
 module.exports = router;
