@@ -2,7 +2,6 @@
 
 const express = require('express');
 const User_Cntr = require('../../controllers/User_cntr');
-const User = require('../../models/User');
 const router = express.Router();
 
 // @route    POST api/users/register

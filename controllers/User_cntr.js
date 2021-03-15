@@ -3,23 +3,23 @@
 const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
+const helpers = require('../constants/index');
 
 const validationChecks = [
-  check('first_name', 'First name is required')
+  check('first_name', helpers.getRequireText('First Name'))
     .not()
     .isEmpty()
     .isLength({ min: 2 }),
   ,
-  check('last_name', 'Last name is required')
+  check('last_name', helpers.getRequireText('Last Name'))
     .not()
     .isEmpty()
     .isLength({ min: 2 }),
   ,
-  check('email', 'Please include a valid email').isEmail(),
-  check(
-    'password',
-    'Please enter a password with 6 or more characters'
-  ).isLength({ min: 6 }),
+  check('email', helpers.getValidText('Email')).isEmail(),
+  check('password', helpers.getLengthText('password', '6')).isLength({
+    min: 6,
+  }),
 ];
 
 const createUser = async (req, res) => {
@@ -36,7 +36,6 @@ const createUser = async (req, res) => {
     avatar,
     current_balance,
     current_balance_currency,
-    credit_cards,
   } = req.body;
 
   try {
@@ -44,7 +43,7 @@ const createUser = async (req, res) => {
     if (user) {
       return res
         .status(400)
-        .json({ errors: [{ msg: 'User is already exists' }] });
+        .json({ errors: [{ msg: helpers.serverMsg.failure.exists }] });
     }
 
     user = new User({
@@ -55,7 +54,6 @@ const createUser = async (req, res) => {
       avatar,
       current_balance,
       current_balance_currency,
-      credit_cards,
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -63,20 +61,20 @@ const createUser = async (req, res) => {
 
     await user.save();
 
-    res.send('User Registered');
+    res.send(helpers.serverMsg.success.create);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
+    res.status(500).send(helpers.serverMsg.failure.serverError);
   }
 };
 
 const deleteUser = async (req, res) => {
   try {
     await User.findOneAndRemove({ _id: req._id });
-    res.json({ msg: 'User deleted' });
+    res.json({ msg: helpers.serverMsg.success.delete });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send(helpers.serverMsg.failure.serverError);
   }
 };
 
@@ -112,11 +110,11 @@ const updateUser = async (req, res) => {
     if (user) {
       user = new User(newUserDetails);
       await user.save();
-      res.send('User Updated');
+      res.send(helpers.serverMsg.success.update);
     }
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send(helpers.serverMsg.failure.serverError);
   }
 };
 
