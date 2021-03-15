@@ -2,10 +2,17 @@
 
 const express = require('express');
 const router = express.Router();
-const { check, validationResult } = require('express-validator');
-const Transaction = require('../../models/Transaction');
 const Transaction_Cntr = require('../../controllers/Transaction_cntr');
-const User = require('../../models/User');
+
+// @route    POST api/transactions
+// @desc     Register User
+// @access   Public
+
+router.post(
+  '/',
+  Transaction_Cntr.validationChecks,
+  Transaction_Cntr.createTransaction
+);
 
 // @route    GET api/transaction/me
 // @desc     Get current user Transactions
@@ -13,14 +20,14 @@ const User = require('../../models/User');
 
 router.get('/me', Transaction_Cntr.getUserTransactions);
 
-// @route    POST api/transaction
+// @route    PUT api/transaction
 // @desc     Create or Update Transaction
 // @access   Private
 
-router.post(
+router.put(
   '/',
   Transaction_Cntr.validationChecks,
-  Transaction_Cntr.createAndUpdateTransaction
+  Transaction_Cntr.UpdateTransaction
 );
 
 // @route    GET api/transactions

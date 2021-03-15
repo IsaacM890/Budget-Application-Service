@@ -2,21 +2,71 @@
 
 const { check, validationResult } = require('express-validator');
 const Transaction = require('../models/Transaction');
-const helpers = require('../constants/index');
+const constants = require('../constants/index');
+const utils = require('../utils/index');
 
 const validationChecks = [
-  check('paymentType', helpers.getRequireText('payment Type')).not().isEmpty(),
-  check('paymentMethod', helpers.getRequireText('payment Method'))
+  check('paymentType', utils.getRequireText('payment Type')).not().isEmpty(),
+  check('paymentMethod', utils.getRequireText('payment Method'))
     .not()
     .isEmpty(),
-  check('cancelled', helpers.getRequireText('Cancelled')).not().isEmpty(),
-  check('time', helpers.getRequireText('Time')).not().isEmpty(),
-  check('date', helpers.getRequireText('Date')).not().isEmpty(),
-  check('currency', helpers.getRequireText('Currency')).not().isEmpty(),
-  check('category', helpers.getRequireText('Category')).not().isEmpty(),
-  check('amount', helpers.getRequireText('Amount')).not().isEmpty(),
-  check('location', helpers.getRequireText('Location')).not().isEmpty(),
+  check('cancelled', utils.getRequireText('Cancelled')).not().isEmpty(),
+  check('time', utils.getRequireText('Time')).not().isEmpty(),
+  check('date', utils.getRequireText('Date')).not().isEmpty(),
+  check('currency', utils.getRequireText('Currency')).not().isEmpty(),
+  check('category', utils.getRequireText('Category')).not().isEmpty(),
+  check('amount', utils.getRequireText('Amount')).not().isEmpty(),
+  check('location', utils.getRequireText('Location')).not().isEmpty(),
 ];
+
+const createTransaction = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const {
+    paymentType,
+    paymentMethod,
+    cancelled,
+    time,
+    date,
+    currency,
+    category,
+    amount,
+    location,
+    company,
+  } = req.body;
+
+  try {
+    let transaction = await Transaction.findOne({ id: req.body._id });
+    if (transaction) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: constants.serverMsg.failure.existsTrnsc }] });
+    }
+
+    transaction = new Transaction({
+      paymentType,
+      paymentMethod,
+      cancelled,
+      time,
+      date,
+      currency,
+      category,
+      amount,
+      location,
+      company,
+    });
+
+    await transaction.save();
+
+    res.send(constants.serverMsg.success.createTrnsc);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send(constants.serverMsg.failure.serverError);
+  }
+};
 
 const getUserTransactions = async (req, res) => {
   try {
@@ -24,16 +74,16 @@ const getUserTransactions = async (req, res) => {
       user: req.user.id,
     }).populate('user', ['first_name', 'last_name']);
     if (!transaction) {
-      return res.status(400).json({ msg: helpers.serverMsg.failure.noTrnsc });
+      return res.status(400).json({ msg: constants.serverMsg.failure.noTrnsc });
     }
     res.json(transaction);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send(helpers.serverMsg.failure.serverError);
+    res.status(500).send(constants.serverMsg.failure.serverError);
   }
 };
 
-const createAndUpdateTransaction = async (req, res) => {
+const UpdateTransaction = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -98,13 +148,9 @@ const createAndUpdateTransaction = async (req, res) => {
       );
       return res.json(transaction);
     }
-    //Create
-    transaction = new Transaction(transactionFields);
-    await Transaction.save();
-    res.json(transaction);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send(helpers.serverMsg.failure.serverError);
+    res.status(500).send(constants.serverMsg.failure.serverError);
   }
 };
 
@@ -117,7 +163,7 @@ const getAllTransactions = async (req, res) => {
     res.json(transactions);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send(helpers.serverMsg.failure.serverError);
+    res.status(500).send(constants.serverMsg.failure.serverError);
   }
 };
 
@@ -129,7 +175,7 @@ const getTransactionByUserId = async (req, res) => {
     if (!transaction) {
       return res
         .status(400)
-        .json({ msg: helpers.serverMsg.failure.noFoundTrnsc });
+        .json({ msg: constants.serverMsg.failure.noFoundTrnsc });
     }
     res.json(transaction);
   } catch (err) {
@@ -137,16 +183,16 @@ const getTransactionByUserId = async (req, res) => {
     if (err.kind == 'ObjectId') {
       return res
         .status(400)
-        .json({ msg: helpers.serverMsg.failure.noFoundTrnsc });
+        .json({ msg: constants.serverMsg.failure.noFoundTrnsc });
     }
-    res.status(500).send(helpers.serverMsg.failure.serverError);
+    res.status(500).send(constants.serverMsg.failure.serverError);
   }
 };
 
 const deleteTransaction = async (req, res) => {
   try {
     await Transaction.findOneAndRemove({ _id: req._id });
-    res.json({ msg: helpers.serverMsg.success.deleteTrnsc });
+    res.json({ msg: constants.serverMsg.success.deleteTrnsc });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -155,8 +201,9 @@ const deleteTransaction = async (req, res) => {
 
 module.exports = {
   validationChecks,
+  createTransaction,
   getUserTransactions,
-  createAndUpdateTransaction,
+  UpdateTransaction,
   getAllTransactions,
   getTransactionByUserId,
   deleteTransaction,
