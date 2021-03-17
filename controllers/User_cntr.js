@@ -6,6 +6,7 @@ const User = require('../models/User');
 const constants = require('../constants/index');
 const utils = require('../utils/index');
 
+
 const validationChecks = [
   check('first_name', utils.getRequireText('First Name'))
     .not()
@@ -66,7 +67,7 @@ const createUser = async (req, res) => {
       success: { msg: constants.serverMsg.success.create, data: user },
     });
   } catch (err) {
-    console.error(err.message);
+    console.info(err.message);
     res
       .status(500)
       .json({ errors: { msg: constants.serverMsg.error.serverError } });
