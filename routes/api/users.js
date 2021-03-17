@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const user_Cntr = require('../../controllers/User_cntr');
-const check = require('../../constants/validations');
+const check = require('../../middleware/validations');
 
 // @route    POST api/users/register
 // @desc     Create User

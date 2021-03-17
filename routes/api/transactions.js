@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const transaction_Cntr = require('../../controllers/Transaction_cntr');
-const check = require('../../constants/validations');
+const check = require('../../middleware/validations');
 
 // @route    POST api/transactions
 // @desc     Register User
