@@ -4,6 +4,7 @@ const { check, validationResult } = require('express-validator');
 const CreditCard = require('../models/CreditCard');
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
+const constants = require('../constants/index');
 
 const validationChecks = [
   check('exp_year', 'Expiration year is required').not().isEmpty(),
@@ -32,7 +33,9 @@ const creatcreditCard = async (req, res) => {
     res.json(creditcard);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res
+      .status(500)
+      .json({ errors: { msg: constants.serverMsg.error.serverError } });
   }
 };
 

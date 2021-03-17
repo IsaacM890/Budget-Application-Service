@@ -7,10 +7,6 @@ const TransactionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
-  id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-  },
   paymentType: {
     type: String,
     required: true,
@@ -45,8 +41,8 @@ const TransactionSchema = new mongoose.Schema({
     to: { type: Number },
   },
   location: {
-    city: { type: String, required: true },
     country: { type: String, required: true },
+    city: { type: String, required: true },
     lat: { type: String },
     lng: { type: String },
   },

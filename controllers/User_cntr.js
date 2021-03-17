@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
 const constants = require('../constants/index');
-const utils = require('../utils/index'); 
+const utils = require('../utils/index');
 
 const validationChecks = [
   check('first_name', utils.getRequireText('First Name'))
@@ -44,7 +44,7 @@ const createUser = async (req, res) => {
     if (user) {
       return res
         .status(400)
-        .json({ errors: [{ msg: constants.serverMsg.failure.exists }] });
+        .json({ errors: [{ msg: constants.serverMsg.error.exists }] });
     }
 
     user = new User({
@@ -62,10 +62,14 @@ const createUser = async (req, res) => {
 
     await user.save();
 
-    res.send(constants.serverMsg.success.create);
+    res.json({
+      success: { msg: constants.serverMsg.success.create, data: user },
+    });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send(constants.serverMsg.failure.serverError);
+    res
+      .status(500)
+      .json({ errors: { msg: constants.serverMsg.error.serverError } });
   }
 };
 
@@ -75,7 +79,9 @@ const deleteUser = async (req, res) => {
     res.json({ msg: constants.serverMsg.success.delete });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send(constants.serverMsg.failure.serverError);
+    res
+      .status(500)
+      .json({ errors: { msg: constants.serverMsg.error.serverError } });
   }
 };
 
@@ -111,11 +117,13 @@ const updateUser = async (req, res) => {
     if (user) {
       user = new User(newUserDetails);
       await user.save();
-      res.send(constants.serverMsg.success.update);
+      res.json(constants.serverMsg.success.update);
     }
   } catch (err) {
     console.error(err.message);
-    res.status(500).send(constants.serverMsg.failure.serverError);
+    res
+      .status(500)
+      .json({ errors: { msg: constants.serverMsg.error.serverError } });
   }
 };
 

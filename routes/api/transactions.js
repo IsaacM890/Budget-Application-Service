@@ -46,6 +46,6 @@ router.get('user/:user_id', Transaction_Cntr.getTransactionByUserId);
 // @desc     Delete Transaction , user
 // @access   private
 
-router.delete('/', Transaction_Cntr.deleteTransaction);
+router.delete('/:id', Transaction_Cntr.deleteTransaction);
 
 module.exports = router;
