@@ -3,7 +3,7 @@
 const User = require('../models/User');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
-const constants = require('../constants/index');
+const { serverMsg } = require('../constants/messages');
 const logger = require('../utils/logger');
 
 const createUser = async (req, res) => {
@@ -27,7 +27,7 @@ const createUser = async (req, res) => {
     if (user) {
       return res
         .status(400)
-        .json({ errors: [{ msg: constants.serverMsg.error.exists }] });
+        .json({ errors: [{ msg: serverMsg.error.exists }] });
     }
 
     user = new User({
@@ -46,25 +46,21 @@ const createUser = async (req, res) => {
     await user.save();
 
     res.json({
-      success: { msg: constants.serverMsg.success.create, data: user },
+      success: { msg: serverMsg.success.create, data: user },
     });
   } catch (err) {
     logger.error(err.message);
-    res
-      .status(500)
-      .json({ errors: { msg: constants.serverMsg.error.serverError } });
+    res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
 
 const deleteUser = async (req, res) => {
   try {
     await User.findOneAndRemove({ _id: req._id });
-    res.json({ msg: constants.serverMsg.success.delete });
+    res.json({ msg: serverMsg.success.delete });
   } catch (err) {
     logger.error(err.message);
-    res
-      .status(500)
-      .json({ errors: { msg: constants.serverMsg.error.serverError } });
+    res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
 
@@ -100,13 +96,11 @@ const updateUser = async (req, res) => {
     if (user) {
       user = new User(newUserDetails);
       await user.save();
-      res.json(constants.serverMsg.success.update);
+      res.json(serverMsg.success.update);
     }
   } catch (err) {
     logger.error(err.message);
-    res
-      .status(500)
-      .json({ errors: { msg: constants.serverMsg.error.serverError } });
+    res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
 

@@ -2,7 +2,7 @@
 
 const Transaction = require('../models/Transaction');
 const { validationResult } = require('express-validator');
-const constants = require('../constants/index');
+const { serverMsg } = require('../constants/messages');
 const logger = require('../utils/logger');
 
 const createTransaction = async (req, res) => {
@@ -25,11 +25,11 @@ const createTransaction = async (req, res) => {
   } = req.body;
 
   try {
-    let transaction = await Transaction.findOne({ _id: req.params.id });
+    const transaction = await Transaction.findOne({ _id: req.params.id });
     if (transaction) {
       return res
         .status(400)
-        .json({ errors: [{ msg: constants.serverMsg.error.existsTrnsc }] });
+        .json({ errors: [{ msg: serverMsg.error.existsTrnsc }] });
     }
 
     transaction = new Transaction({
@@ -47,17 +47,17 @@ const createTransaction = async (req, res) => {
 
     await transaction.save();
 
-    res.json({
+    return res.json({
       success: {
-        msg: constants.serverMsg.success.createTrnsc,
+        msg: serverMsg.success.createTrnsc,
         data: transaction,
       },
     });
   } catch (err) {
     logger.error(err.message);
-    res
+    return res
       .status(500)
-      .json({ errors: [{ msg: constants.serverMsg.error.serverError }] });
+      .json({ errors: [{ msg: serverMsg.error.serverError }] });
   }
 };
 
@@ -67,16 +67,12 @@ const getUserTransactions = async (req, res) => {
       user: req.user.id,
     }).populate('user', ['first_name', 'last_name']);
     if (!transaction) {
-      return res
-        .status(400)
-        .json({ errors: { msg: constants.serverMsg.error.noTrnsc } });
+      return res.status(400).json({ errors: { msg: serverMsg.error.noTrnsc } });
     }
-    res.json(transaction);
+    return res.json(transaction);
   } catch (err) {
     logger.error(err.message);
-    res
-      .status(500)
-      .json({ errors: { msg: constants.serverMsg.error.serverError } });
+    res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
 
@@ -135,7 +131,7 @@ const updateTransaction = async (req, res) => {
   );
 
   try {
-    let transaction = await Transaction.findOne({ user: req.user.id });
+    const transaction = await Transaction.findOne({ user: req.user.id });
     if (transaction) {
       //Update
       transaction = await Transaction.findOneAndUpdate(
@@ -147,9 +143,9 @@ const updateTransaction = async (req, res) => {
     }
   } catch (err) {
     logger.error(err.message);
-    res
+    return res
       .status(500)
-      .json({ errors: { msg: constants.serverMsg.error.serverError } });
+      .json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
 
@@ -162,9 +158,7 @@ const getAllTransactions = async (req, res) => {
     res.json(transactions);
   } catch (err) {
     logger.error(err.message);
-    res
-      .status(500)
-      .json({ success: { msg: constants.serverMsg.error.serverError } });
+    res.status(500).json({ success: { msg: serverMsg.error.serverError } });
   }
 };
 
@@ -174,21 +168,15 @@ const getTransactionByUserId = async (req, res) => {
       user: req.params.user_id,
     }).populate('user', ['first_name', 'last_name']);
     if (!transaction) {
-      return res
-        .status(400)
-        .json({ msg: constants.serverMsg.error.noFoundTrnsc });
+      return res.status(400).json({ msg: serverMsg.error.noFoundTrnsc });
     }
     res.json(transaction);
   } catch (err) {
     logger.error(err.message);
     if (err.kind == 'ObjectId') {
-      return res
-        .status(400)
-        .json({ msg: constants.serverMsg.error.noFoundTrnsc });
+      return res.status(400).json({ msg: serverMsg.error.noFoundTrnsc });
     }
-    res
-      .status(500)
-      .json({ errors: { msg: constants.serverMsg.error.serverError } });
+    res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
 
@@ -199,17 +187,15 @@ const deleteTransaction = async (req, res) => {
     });
     if (!transaction) {
       return res.status(400).json({
-        errors: { msg: constants.serverMsg.error.noFoundTrnsc },
+        errors: { msg: serverMsg.error.noFoundTrnsc },
       });
     }
     return res.json({
-      success: { msg: constants.serverMsg.success.deleteTrnsc },
+      success: { msg: serverMsg.success.deleteTrnsc },
     });
   } catch (err) {
     logger.error(err.message);
-    res
-      .status(500)
-      .json({ errors: { msg: constants.serverMsg.error.serverError } });
+    res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
 

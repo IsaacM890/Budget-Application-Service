@@ -2,7 +2,7 @@
 
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
-const constants = require('../constants/index');
+const { serverMsg } = require('../constants/messages');
 const logger = require('../utils/logger');
 
 const creatCreditCard = async (req, res) => {
@@ -26,7 +26,7 @@ const creatCreditCard = async (req, res) => {
     logger.error(err.message);
     return res
       .status(500)
-      .json({ errors: { msg: constants.serverMsg.error.serverError } });
+      .json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
 
