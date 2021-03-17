@@ -1,13 +1,15 @@
 /** @format */
 
 const express = require('express');
-const user_Cntr = require('../../controllers/User_cntr');
 const router = express.Router();
+const user_Cntr = require('../../controllers/User_cntr');
+const check = require('../../constants/validations');
 
 // @route    POST api/users/register
 // @desc     Create User
 // @access   Public
-router.post('/register',  user_Cntr.createUser);
+//@@@TODO - FIX VALIDATION MIDDLEWARE ===>>> check.userChecks,
+router.post('/register', user_Cntr.createUser);
 
 // @route    DELETE api/transactions
 // @desc     Delete User

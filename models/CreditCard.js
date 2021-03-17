@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 
 const CreditCardSchema = new mongoose.Schema({
-  userID: {
+  card_Holder: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },

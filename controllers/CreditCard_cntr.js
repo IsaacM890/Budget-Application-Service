@@ -1,45 +1,35 @@
 /** @format */
 
-const { check, validationResult } = require('express-validator');
-const CreditCard = require('../models/CreditCard');
-const { check, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const constants = require('../constants/index');
+const logger = require('../utils/logger');
 
-const validationChecks = [
-  check('exp_year', 'Expiration year is required').not().isEmpty(),
-  check('exp_month', 'Expiration yea is required').not(),
-
-  check('last4Digits', 'Please include 4 Digits at least ')
-    .isEmpty()
-    .isLength({ min: 4 }),
-];
-
-const creatcreditCard = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+const creatCreditCard = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     const user = await User.findById(req.user.id).select('-password');
-    const newcreditCard = {
+    const newCreditCard = {
       exp_year: req.body.exp_year,
       exp_month: req.body.exp_month,
       last4Digits: req.body.last4Digits,
-      cardHolder: user.firstname + user.last_name,
+      card_Holder: user.first_name + user.last_name,
     };
 
-    const creditcard = await newcreditCard.save();
-    res.json(creditcard);
+    const creditcard = await newCreditCard.save();
+    return res.json(creditcard);
   } catch (err) {
-    console.error(err.message);
-    res
+    logger.error(err.message);
+    return res
       .status(500)
       .json({ errors: { msg: constants.serverMsg.error.serverError } });
   }
 };
 
 module.exports = {
-  validationChecks,
-  creatcreditCard,
+  creatCreditCard,
 };

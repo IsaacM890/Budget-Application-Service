@@ -2,50 +2,43 @@
 
 const express = require('express');
 const router = express.Router();
-const Transaction_Cntr = require('../../controllers/Transaction_cntr');
+const transaction_Cntr = require('../../controllers/Transaction_cntr');
+const check = require('../../constants/validations');
 
 // @route    POST api/transactions
 // @desc     Register User
 // @access   Public
 
-router.post(
-  '/',
-  Transaction_Cntr.validationChecks,
-  Transaction_Cntr.createTransaction
-);
+router.post('/', check.transactionChecks, transaction_Cntr.createTransaction);
 
 // @route    GET api/transaction/me
 // @desc     Get current user Transactions
 // @access   Private
 
-router.get('/me', Transaction_Cntr.getUserTransactions);
+router.get('/me', transaction_Cntr.getUserTransactions);
 
 // @route    PUT api/transaction
 // @desc     Create or Update Transaction
 // @access   Private
 
-router.put(
-  '/',
-  Transaction_Cntr.validationChecks,
-  Transaction_Cntr.UpdateTransaction
-);
+router.put('/', check.transactionChecks, transaction_Cntr.updateTransaction);
 
 // @route    GET api/transactions
 // @desc     Get all Transactions
 // @access   Public
 
-router.get('/', Transaction_Cntr.getAllTransactions);
+router.get('/', transaction_Cntr.getAllTransactions);
 
 // @route    GET api/transactions/user/:user_id
 // @desc     Get Transaction by user ID
 // @access   Public
 
-router.get('user/:user_id', Transaction_Cntr.getTransactionByUserId);
+router.get('user/:user_id', transaction_Cntr.getTransactionByUserId);
 
 // @route    DELETE api/transactions
 // @desc     Delete Transaction , user
 // @access   private
 
-router.delete('/:id', Transaction_Cntr.deleteTransaction);
+router.delete('/:id', transaction_Cntr.deleteTransaction);
 
 module.exports = router;

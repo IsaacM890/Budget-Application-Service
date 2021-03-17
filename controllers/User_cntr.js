@@ -1,28 +1,10 @@
 /** @format */
 
-const bcrypt = require('bcryptjs');
-const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
+const { validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 const constants = require('../constants/index');
-const utils = require('../utils/index');
-
-
-const validationChecks = [
-  check('first_name', utils.getRequireText('First Name'))
-    .not()
-    .isEmpty()
-    .isLength({ min: 2 }),
-  ,
-  check('last_name', utils.getRequireText('Last Name'))
-    .not()
-    .isEmpty()
-    .isLength({ min: 2 }),
-  ,
-  check('email', utils.getValidText('Email')).isEmail(),
-  check('password', utils.getLengthText('password', '6')).isLength({
-    min: 6,
-  }),
-];
+const logger = require('../utils/logger');
 
 const createUser = async (req, res) => {
   const errors = validationResult(req);
@@ -67,7 +49,7 @@ const createUser = async (req, res) => {
       success: { msg: constants.serverMsg.success.create, data: user },
     });
   } catch (err) {
-    console.info(err.message);
+    logger.error(err.message);
     res
       .status(500)
       .json({ errors: { msg: constants.serverMsg.error.serverError } });
@@ -79,7 +61,7 @@ const deleteUser = async (req, res) => {
     await User.findOneAndRemove({ _id: req._id });
     res.json({ msg: constants.serverMsg.success.delete });
   } catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
     res
       .status(500)
       .json({ errors: { msg: constants.serverMsg.error.serverError } });
@@ -121,7 +103,7 @@ const updateUser = async (req, res) => {
       res.json(constants.serverMsg.success.update);
     }
   } catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
     res
       .status(500)
       .json({ errors: { msg: constants.serverMsg.error.serverError } });
@@ -129,7 +111,6 @@ const updateUser = async (req, res) => {
 };
 
 module.exports = {
-  validationChecks,
   createUser,
   deleteUser,
   updateUser,

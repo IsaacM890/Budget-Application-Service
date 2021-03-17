@@ -1,6 +1,7 @@
 /** @format */
 
 const mongoose = require('mongoose');
+const logger = require('../utils/logger');
 require('dotenv').config();
 
 const connectDB = async () => {
@@ -10,9 +11,9 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useCreateIndex: true,
     });
-    console.log('MongoDB Connected...!');
+    logger.info('MongoDB Connected...!');
   } catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
     // Exit process with failure
     process.exit(1);
   }

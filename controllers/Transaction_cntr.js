@@ -1,23 +1,9 @@
 /** @format */
 
-const { check, validationResult } = require('express-validator');
 const Transaction = require('../models/Transaction');
+const { validationResult } = require('express-validator');
 const constants = require('../constants/index');
-const utils = require('../utils/index');
-
-const validationChecks = [
-  check('paymentType', utils.getRequireText('payment Type')).not().isEmpty(),
-  check('paymentMethod', utils.getRequireText('payment Method'))
-    .not()
-    .isEmpty(),
-  check('cancelled', utils.getRequireText('Cancelled')).not().isEmpty(),
-  check('time', utils.getRequireText('Time')).not().isEmpty(),
-  check('date', utils.getRequireText('Date')).not().isEmpty(),
-  check('currency', utils.getRequireText('Currency')).not().isEmpty(),
-  check('category', utils.getRequireText('Category')).not().isEmpty(),
-  check('amount', utils.getRequireText('Amount')).not().isEmpty(),
-  check('location', utils.getRequireText('Location')).not().isEmpty(),
-];
+const logger = require('../utils/logger');
 
 const createTransaction = async (req, res) => {
   const errors = validationResult(req);
@@ -68,7 +54,7 @@ const createTransaction = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
     res
       .status(500)
       .json({ errors: [{ msg: constants.serverMsg.error.serverError }] });
@@ -87,14 +73,14 @@ const getUserTransactions = async (req, res) => {
     }
     res.json(transaction);
   } catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
     res
       .status(500)
       .json({ errors: { msg: constants.serverMsg.error.serverError } });
   }
 };
 
-const UpdateTransaction = async (req, res) => {
+const updateTransaction = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -160,7 +146,7 @@ const UpdateTransaction = async (req, res) => {
       return res.json(transaction);
     }
   } catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
     res
       .status(500)
       .json({ errors: { msg: constants.serverMsg.error.serverError } });
@@ -175,7 +161,7 @@ const getAllTransactions = async (req, res) => {
     ]);
     res.json(transactions);
   } catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
     res
       .status(500)
       .json({ success: { msg: constants.serverMsg.error.serverError } });
@@ -194,7 +180,7 @@ const getTransactionByUserId = async (req, res) => {
     }
     res.json(transaction);
   } catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
     if (err.kind == 'ObjectId') {
       return res
         .status(400)
@@ -220,7 +206,7 @@ const deleteTransaction = async (req, res) => {
       success: { msg: constants.serverMsg.success.deleteTrnsc },
     });
   } catch (err) {
-    console.error(err.message);
+    logger.error(err.message);
     res
       .status(500)
       .json({ errors: { msg: constants.serverMsg.error.serverError } });
@@ -228,10 +214,9 @@ const deleteTransaction = async (req, res) => {
 };
 
 module.exports = {
-  validationChecks,
   createTransaction,
   getUserTransactions,
-  UpdateTransaction,
+  updateTransaction,
   getAllTransactions,
   getTransactionByUserId,
   deleteTransaction,
