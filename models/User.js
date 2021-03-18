@@ -11,7 +11,28 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  email:{
-      
-  }
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  avatar: {
+    type: String,
+    required: true,
+  },
+  current_balance: {
+    type: String,
+    required: true,
+  },
+  current_balance_currency: {
+    type: String,
+    required: true,
+  },
+ 
 });
+
+module.exports = User = mongoose.model('user', UserSchema);
