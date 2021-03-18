@@ -6,6 +6,25 @@ const bcrypt = require('bcryptjs');
 const { serverMsg } = require('../constants/messages');
 const logger = require('../utils/logger');
 
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user || user.length == 0) {
+      logger.error('User not found');
+      return res
+        .status(404)
+        .json({ errors: [{ msg: serverMsg.error.noExists }] });
+    }
+    logger.info('User found');
+    return res
+      .status(200)
+      .json({ success: { msg: serverMsg.success.userFound, user } });
+  } catch (err) {
+    logger.error(err.message);
+    res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
+  }
+};
+
 const createUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -25,6 +44,7 @@ const createUser = async (req, res) => {
   try {
     let user = await User.findOne({ email });
     if (user) {
+      logger.error('User already exists');
       return res
         .status(400)
         .json({ errors: [{ msg: serverMsg.error.exists }] });
@@ -45,8 +65,9 @@ const createUser = async (req, res) => {
 
     await user.save();
 
-    res.json({
-      success: { msg: serverMsg.success.create, data: user },
+    logger.info('User Registred');
+    return res.json({
+      success: { msg: serverMsg.success.create, user },
     });
   } catch (err) {
     logger.error(err.message);
@@ -56,8 +77,19 @@ const createUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    await User.findOneAndRemove({ _id: req._id });
-    res.json({ msg: serverMsg.success.delete });
+    const user = await User.findOneAndDelete({
+      _id: req.params.id,
+    });
+    if (!user) {
+      logger.error('Transaction not found');
+      return res.status(400).json({
+        errors: { msg: serverMsg.error.noFoundUser },
+      });
+    }
+    logger.info('User Deleted');
+    return res.json({
+      success: { msg: serverMsg.success.delete },
+    });
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
@@ -65,42 +97,24 @@ const deleteUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const {
-    first_name,
-    last_name,
-    email,
-    password,
-    avatar,
-    current_balance,
-    current_balance_currency,
-    credit_cards,
-  } = req.body;
-
-  const newUserDetails = {
-    first_name,
-    last_name,
-    email,
-    password,
-    avatar,
-    current_balance,
-    current_balance_currency,
-    credit_cards,
-  };
   try {
-    const user = await User.findOne({ email });
-    if (user) {
-      user = new User(newUserDetails);
-      await user.save();
-      res.json(serverMsg.success.update);
+    const body = req.body;
+    const user = await User.updateOne({ _id: req.params.id }, body);
+    if (!user) {
+      logger.error('There is not field to update');
+      return res
+        .status(400)
+        .json({ errors: { msg: serverMsg.error.updateErr } });
     }
+    logger.info('User Updated');
+    return res.status(200).json({
+      success: { msg: serverMsg.success.update, user },
+    });
   } catch (err) {
     logger.error(err.message);
-    res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
+    return res
+      .status(500)
+      .json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
 
@@ -108,4 +122,5 @@ module.exports = {
   createUser,
   deleteUser,
   updateUser,
+  getUserById,
 };
