@@ -18,7 +18,7 @@ app.get('/', (req, res) => res.send('API Running'));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/transactions', require('./routes/api/transactions'));
 
-app.get('/health-check', (req, res) => {
+app.get('/healthcheck', (req, res) => {
   return res.status(200).send('running....');
 });
 //app.use('/api/cards', require('./routes/api/cards'));
