@@ -16,9 +16,7 @@ const getUserById = async (req, res) => {
         .json({ errors: [{ msg: serverMsg.error.noExists }] });
     }
     logger.info('User found');
-    return res
-      .status(200)
-      .json({ success: { msg: serverMsg.success.userFound, user } });
+    return res.status(200).json(user);
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
@@ -66,9 +64,7 @@ const createUser = async (req, res) => {
     await user.save();
 
     logger.info('User Registred');
-    return res.json({
-      success: { msg: serverMsg.success.create, user },
-    });
+    return res.json(user);
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
@@ -87,9 +83,7 @@ const deleteUser = async (req, res) => {
       });
     }
     logger.info('User Deleted');
-    return res.json({
-      success: { msg: serverMsg.success.delete },
-    });
+    return res.json(serverMsg.success.delete);
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ errors: { msg: serverMsg.error.serverError } });

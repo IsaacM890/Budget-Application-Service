@@ -19,12 +19,7 @@ const getAllTransactions = async (req, res) => {
         },
       });
     }
-    return res.status(200).json({
-      success: {
-        msg: serverMsg.success.getAllTrnsc,
-        transactions: transactions,
-      },
-    });
+    return res.status(200).json(transactions);
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ error: { msg: serverMsg.error.serverError } });
