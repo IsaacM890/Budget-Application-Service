@@ -69,12 +69,7 @@ const createTransaction = async (req, res) => {
     await transaction.save();
 
     logger.info('Transaction Created');
-    return res.json({
-      success: {
-        msg: serverMsg.success.createTrnsc,
-        data: transaction,
-      },
-    });
+    return res.json(transaction);
   } catch (err) {
     logger.error(err.message);
     return res
@@ -119,47 +114,12 @@ const deleteTransaction = async (req, res) => {
       });
     }
     logger.info('Transaction Deleted');
-    return res.json({
-      success: { msg: serverMsg.success.deleteTrnsc },
-    });
+    return res.json(serverMsg.success.deleteTrnsc);
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
   }
 };
-
-// const getUserTransactions = async (req, res) => {
-//   try {
-//     const transaction = await Transaction.findOne({
-//       user: req.user.id,
-//     }).populate('user', ['first_name', 'last_name']);
-//     if (!transaction) {
-//       return res.status(400).json({ errors: { msg: serverMsg.error.noTrnsc } });
-//     }
-//     return res.json(transaction);
-//   } catch (err) {
-//     logger.error(err.message);
-//     res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
-//   }
-// };
-
-// const getTransactionByUserId = async (req, res) => {
-//   try {
-//     const transaction = await Transaction.findOne({
-//       user: req.params.user_id,
-//     }).populate('user', ['first_name', 'last_name']);
-//     if (!transaction) {
-//       return res.status(400).json({ msg: serverMsg.error.noFoundTrnsc });
-//     }
-//     res.json(transaction);
-//   } catch (err) {
-//     logger.error(err.message);
-//     if (err.kind == 'ObjectId') {
-//       return res.status(400).json({ msg: serverMsg.error.noFoundTrnsc });
-//     }
-//     res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
-//   }
-// };
 
 module.exports = {
   createTransaction,
