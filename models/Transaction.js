@@ -24,7 +24,7 @@ const TransactionSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: String,
+    type: Date,
     required: true,
   },
   currency: {

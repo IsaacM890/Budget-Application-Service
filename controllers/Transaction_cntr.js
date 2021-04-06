@@ -4,13 +4,20 @@ const Transaction = require('../models/Transaction');
 const { validationResult } = require('express-validator');
 const { serverMsg } = require('../constants/messages');
 const logger = require('../utils/logger');
+const dateFormat = require('dateformat');
 
 const getAllTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find().populate('user', [
-      'first_name',
-      'last_name',
-    ]);
+    const defaultLimit = 0;
+    const defaultSort = 'date';
+    const isDesc = req.query.asc ? '1' : '-1';
+    const sortBy = { [req.query.sortBy || defaultSort]: isDesc };
+    const limit = Number(req.query.limit || defaultLimit);
+    const transactions = await Transaction.find()
+      .sort(sortBy)
+      .limit(limit)
+
+      .populate('user', ['first_name', 'last_name']);
     if (!transactions || transactions.length == 0) {
       return res.status(400).json({
         errors: {
@@ -58,7 +65,7 @@ const createTransaction = async (req, res) => {
       paymentMethod,
       cancelled,
       time,
-      date,
+      date: dateFormat(date, 'yyyy-mm-dd'),
       currency,
       category,
       amount,
