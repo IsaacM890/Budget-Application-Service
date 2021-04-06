@@ -101,9 +101,7 @@ const updateUser = async (req, res) => {
         .json({ errors: { msg: serverMsg.error.updateErr } });
     }
     logger.info('User Updated');
-    return res.status(200).json({
-      success: { msg: serverMsg.success.update, user },
-    });
+    return res.status(200).json({ msg: serverMsg.success.update });
   } catch (err) {
     logger.error(err.message);
     return res

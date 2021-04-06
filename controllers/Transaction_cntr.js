@@ -91,9 +91,7 @@ const updateTransaction = async (req, res) => {
         .json({ errors: { msg: serverMsg.error.updateErr } });
     }
     logger.info('Transaction Updated');
-    return res.status(200).json({
-      success: { msg: serverMsg.success.updateTrnsc, transaction },
-    });
+    return res.status(200).json({ msg: serverMsg.success.updateTrnsc });
   } catch (err) {
     logger.error(err.message);
     return res
