@@ -5,6 +5,8 @@ const router = express.Router();
 const transaction_Cntr = require('../../controllers/Transaction_cntr');
 const check = require('../../middleware/validations');
 
+// router.get('/:id', transaction_Cntr.getTransactionById);
+
 // @route    GET api/transactions
 // @desc     Get all Transactions
 // @access   Public

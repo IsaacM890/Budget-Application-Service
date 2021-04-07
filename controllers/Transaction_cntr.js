@@ -6,6 +6,23 @@ const { serverMsg } = require('../constants/messages');
 const logger = require('../utils/logger');
 const dateFormat = require('dateformat');
 
+// const getTransactionById = async (req, res) => {
+//   try {
+//     const transaction = await Transaction.findOne({ _id: req.params.id });
+//     if (!transaction || transaction.length == 0) {
+//       logger.error('Transaction not found');
+//       return res
+//         .status(404)
+//         .json({ errors: [{ msg: serverMsg.error.noExists }] });
+//     }
+//     logger.info('Transaction found');
+//     return res.status(200).json(transaction);
+//   } catch (err) {
+//     logger.error(err.message);
+//     res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
+//   }
+// };
+
 const getAllTransactions = async (req, res) => {
   try {
     const defaultLimit = 0;
@@ -130,5 +147,6 @@ module.exports = {
   createTransaction,
   updateTransaction,
   getAllTransactions,
+  // getTransactionById,
   deleteTransaction,
 };
