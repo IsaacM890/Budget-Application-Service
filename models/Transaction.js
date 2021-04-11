@@ -37,8 +37,8 @@ const TransactionSchema = new mongoose.Schema({
   },
   company: { type: String },
   amount: {
-    from: { type: Number, required: true },
-    to: { type: Number },
+    type: Number,
+    required: true,
   },
   location: {
     country: { type: String, required: true },
