@@ -5,7 +5,7 @@ const router = express.Router();
 const transaction_Cntr = require('../../controllers/Transaction_cntr');
 const check = require('../../middleware/validations');
 
-// router.get('/:id', transaction_Cntr.getTransactionById);
+router.get('/latest', transaction_Cntr.getLatestTransactionsByLimit);
 
 // @route    GET api/transactions
 // @desc     Get all Transactions

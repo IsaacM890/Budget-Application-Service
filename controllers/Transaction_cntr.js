@@ -6,24 +6,7 @@ const { serverMsg } = require('../constants/messages');
 const logger = require('../utils/logger');
 const dateFormat = require('dateformat');
 
-// const getTransactionById = async (req, res) => {
-//   try {
-//     const transaction = await Transaction.findOne({ _id: req.params.id });
-//     if (!transaction || transaction.length == 0) {
-//       logger.error('Transaction not found');
-//       return res
-//         .status(404)
-//         .json({ errors: [{ msg: serverMsg.error.noExists }] });
-//     }
-//     logger.info('Transaction found');
-//     return res.status(200).json(transaction);
-//   } catch (err) {
-//     logger.error(err.message);
-//     res.status(500).json({ errors: { msg: serverMsg.error.serverError } });
-//   }
-// };
-
-const getAllTransactions = async (req, res) => {
+const getLatestTransactionsByLimit = async (req, res) => {
   try {
     const defaultLimit = 0;
     const defaultSort = 'date';
@@ -33,6 +16,30 @@ const getAllTransactions = async (req, res) => {
     const transactions = await Transaction.find()
       .sort(sortBy)
       .limit(limit)
+
+      .populate('user', ['first_name', 'last_name']);
+    if (!transactions || transactions.length == 0) {
+      return res.status(400).json({
+        errors: {
+          msg: serverMsg.error.noFoundTrnsc,
+          transactions: transactions,
+        },
+      });
+    }
+    return res.status(200).json(transactions);
+  } catch (err) {
+    logger.error(err.message);
+    res.status(500).json({ error: { msg: serverMsg.error.serverError } });
+  }
+};
+
+const getAllTransactions = async (req, res) => {
+  try {
+    const defaultSort = 'date';
+    const isDesc = req.query.asc ? '1' : '-1';
+    const sortBy = { [req.query.sortBy || defaultSort]: isDesc };
+    const transactions = await Transaction.find()
+      .sort(sortBy)
 
       .populate('user', ['first_name', 'last_name']);
     if (!transactions || transactions.length == 0) {
@@ -147,6 +154,6 @@ module.exports = {
   createTransaction,
   updateTransaction,
   getAllTransactions,
-  // getTransactionById,
+  getLatestTransactionsByLimit,
   deleteTransaction,
 };
