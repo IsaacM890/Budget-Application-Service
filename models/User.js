@@ -3,11 +3,11 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-  first_name: {
+  FirstName: {
     type: String,
     required: true,
   },
-  last_name: {
+  LastName: {
     type: String,
     required: true,
   },
@@ -24,11 +24,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  current_balance: {
+  currentBalance: {
     type: String,
     required: true,
   },
-  current_balance_currency: {
+  currentBalanceCurrency: {
     type: String,
     required: true,
   },

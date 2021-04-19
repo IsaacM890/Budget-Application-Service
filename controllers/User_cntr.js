@@ -30,13 +30,13 @@ const createUser = async (req, res) => {
   }
 
   const {
-    first_name,
-    last_name,
+    FirstName,
+    LastName,
     email,
     password,
     avatar,
-    current_balance,
-    current_balance_currency,
+    currentBalance,
+    currentBalanceCurrency,
     creditCard,
   } = req.body;
 
@@ -50,13 +50,13 @@ const createUser = async (req, res) => {
     }
 
     user = new User({
-      first_name,
-      last_name,
+      FirstName,
+      LastName,
       email,
       password,
       avatar,
-      current_balance,
-      current_balance_currency,
+      currentBalance,
+      currentBalanceCurrency,
       creditCard,
     });
 
