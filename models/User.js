@@ -34,8 +34,8 @@ const UserSchema = new mongoose.Schema({
   },
   creditCard: [
     {
-      exp_year: { type: Number, required: true },
-      exp_month: { type: Number, required: true },
+      expYear: { type: Number, required: true },
+      expMonth: { type: Number, required: true },
       last4Digits: { type: Number, required: true },
     },
   ],
