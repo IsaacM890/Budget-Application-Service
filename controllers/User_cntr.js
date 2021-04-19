@@ -37,6 +37,7 @@ const createUser = async (req, res) => {
     avatar,
     current_balance,
     current_balance_currency,
+    creditCard,
   } = req.body;
 
   try {
@@ -56,6 +57,7 @@ const createUser = async (req, res) => {
       avatar,
       current_balance,
       current_balance_currency,
+      creditCard,
     });
 
     const salt = await bcrypt.genSalt(10);

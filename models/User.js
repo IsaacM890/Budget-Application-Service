@@ -32,7 +32,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
- 
+  creditCard: [
+    {
+      exp_year: { type: Number, required: true },
+      exp_month: { type: Number, required: true },
+      last4Digits: { type: Number, required: true },
+    },
+  ],
 });
 
 module.exports = User = mongoose.model('user', UserSchema);
