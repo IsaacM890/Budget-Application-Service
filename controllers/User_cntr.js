@@ -30,8 +30,8 @@ const createUser = async (req, res) => {
   }
 
   const {
-    FirstName,
-    LastName,
+    firstName,
+    lastName,
     email,
     password,
     avatar,
@@ -50,8 +50,8 @@ const createUser = async (req, res) => {
     }
 
     user = new User({
-      FirstName,
-      LastName,
+      firstName,
+      lastName,
       email,
       password,
       avatar,
